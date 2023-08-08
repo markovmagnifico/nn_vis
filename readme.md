@@ -1,7 +1,6 @@
 TODO List:
 
-- Add camera controls for the user
--
+## X Add camera controls for the user
 
 - Get tensorflow.js working
 - Get a basic mnist model working

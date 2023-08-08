@@ -3,6 +3,7 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { TextGeometry } from 'three/addons/geometries/TextGeometry.js';
 import { FontLoader } from 'three/addons/loaders/FontLoader.js';
 import WebGL from 'three/addons/capabilities/WebGL.js';
+import model from './train.js';
 
 // Create the renderer
 const renderer = new THREE.WebGLRenderer();
@@ -27,16 +28,23 @@ const geometry1 = new THREE.BoxGeometry(1, 1, 1);
 const material1 = new THREE.MeshBasicMaterial({ color: 0x77ee11 });
 const cube = new THREE.Mesh(geometry1, material1);
 scene.add(cube);
+// Give edges to the cube
+const edges1 = new THREE.EdgesGeometry(geometry1);
+const line1 = new THREE.LineSegments(
+  edges1,
+  new THREE.LineBasicMaterial({ color: 0x000000 })
+);
+scene.add(line1);
 
-// Create a dashed line
-const materia2 = new THREE.LineDashedMaterial({ color: 0x0000ff });
-const points = [];
-points.push(new THREE.Vector3(-10, 0, 0));
-points.push(new THREE.Vector3(0, 10, 0));
-points.push(new THREE.Vector3(10, 0, 0));
-const geometry2 = new THREE.BufferGeometry().setFromPoints(points);
-const line = new THREE.Line(geometry2, materia2);
-scene.add(line);
+// // Create a dashed line
+// const materia2 = new THREE.LineDashedMaterial({ color: 0x0000ff });
+// const points = [];
+// points.push(new THREE.Vector3(-10, 0, 0));
+// points.push(new THREE.Vector3(0, 10, 0));
+// points.push(new THREE.Vector3(10, 0, 0));
+// const geometry2 = new THREE.BufferGeometry().setFromPoints(points);
+// const line2 = new THREE.Line(geometry2, materia2);
+// scene.add(line2);
 
 // Making the cube clickable
 const raycaster = new THREE.Raycaster();
@@ -79,6 +87,8 @@ function animate() {
   requestAnimationFrame(animate);
   cube.rotation.x += 0.01;
   cube.rotation.y += 0.01;
+  line1.rotation.x += 0.01;
+  line1.rotation.y += 0.01;
   renderer.render(scene, camera);
 }
 
@@ -90,3 +100,72 @@ if (WebGL.isWebGLAvailable()) {
   const warning = WebGL.getWebGLErrorMessage();
   document.getElementById('container').appendChild(warning);
 }
+
+/*
+
+Begin tensorflow.js section for learning
+
+*/
+const weight = Array.from(model.getWeights()[0].dataSync());
+const bias = Array.from(model.getWeights()[1].dataSync());
+
+console.log(model);
+console.log(`Model weight: ${weight}`);
+console.log(`Model bias: ${bias}`);
+window.model = model;
+
+/*
+Getting something from the user
+*/
+// Get the input and error message elements
+let inputElement = document.getElementById('user-input');
+let errorMessageElement = document.getElementById('error-message');
+
+let fontLoader = new FontLoader();
+let textMesh;
+
+function createTextMesh(text, font) {
+  let geometry = new TextGeometry(text, {
+    font: font,
+    size: 1,
+    height: 0.2,
+  });
+
+  let material = new THREE.MeshBasicMaterial({ color: 0x000000 });
+
+  let mesh = new THREE.Mesh(geometry, material);
+  mesh.position.set(-5, 2, 0);
+  // mesh.rotation.set(0, -Math.PI / 2, 0);
+
+  return mesh;
+}
+
+function updateSceneText(newText, font) {
+  // Remove the old text mesh from the scene
+  if (textMesh) {
+    scene.remove(textMesh);
+  }
+
+  // Create a new text mesh
+  textMesh = createTextMesh(newText, font);
+
+  // Add the new text mesh to the scene
+  scene.add(textMesh);
+}
+
+fontLoader.load('fonts/helvetiker_regular.typeface.json', (font) => {
+  // Handle the input event
+  inputElement.addEventListener('input', (event) => {
+    let userInput = event.target.value;
+
+    // Check if the input is a number
+    if (isNaN(userInput)) {
+      errorMessageElement.textContent = 'Please enter a number.';
+    } else {
+      errorMessageElement.textContent = '';
+      updateSceneText(userInput, font);
+    }
+  });
+});
+
+// Now add a basic visualization of this network

@@ -4,12 +4,15 @@
 <head>
     <meta charset="utf-8">
     <title>NN Visualizer</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
     <style>
         body { margin: 0; }
     </style>
 </html>
 
 <body>
+    <input type="text" id="user-input" required>
+    <span id="error-message" style="color: red;"></span>
     <script type="module" src="main.js"></script>
 </body>
 
