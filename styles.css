@@ -1,0 +1,83 @@
+#drawingCanvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 100;
+  width: 280px; /* Scale for visibility */
+  height: 280px; /* Scale for visibility */
+}
+
+#controls {
+  position: absolute;
+  top: 290px; /* Same as the height of the drawingCanvas */
+  left: 140px; /* Half the width of the drawingCanvas */
+  transform: translateX(-50%); /* Centering adjustment */
+  z-index: 100;
+  display: flex;
+  flex-direction: column; /* This will stack the children vertically */
+  align-items: center;
+  justify-content: space-between;
+}
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ffffff;
+  transition: 0.4s;
+  border-radius: 34px;
+}
+
+.slider:before {
+  position: absolute;
+  content: '';
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: rgb(129, 116, 116);
+  transition: 0.4s;
+  border-radius: 50%;
+}
+
+input:checked + .slider {
+  background-color: #000000;
+}
+
+input:checked + .slider:before {
+  transform: translateX(26px);
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #2196f3;
+}
+
+#drawLabel,
+#eraseLabel {
+  margin: 0;
+  padding: 0 10px; /* Add spacing around the labels */
+}
+
+#controlBox {
+  display: flex;
+  flex-direction: row; /* This will stack the children vertically */
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}

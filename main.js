@@ -4,6 +4,7 @@ import { TextGeometry } from 'three/addons/geometries/TextGeometry.js';
 import { FontLoader } from 'three/addons/loaders/FontLoader.js';
 import WebGL from 'three/addons/capabilities/WebGL.js';
 import model from './train.js';
+import convModel from './model.js';
 
 // Create the renderer
 const renderer = new THREE.WebGLRenderer();
@@ -115,6 +116,39 @@ console.log(`Model bias: ${bias}`);
 window.model = model;
 
 /*
+
+Drawing a model (no weights for now)
+
+*/
+window.convModel = convModel;
+const weightsArray = convModel.getWeights()[0].dataSync();
+const kernelHeight = 5;
+const kernelWidth = 5;
+const inputChannels = 1;
+const outputChannels = 8;
+
+// Reshaping the array into the 4D shape
+const weights4D = tf.tensor(weightsArray, [
+  kernelHeight,
+  kernelWidth,
+  inputChannels,
+  outputChannels,
+]);
+
+// Accessing the kernel for each filter:
+for (let i = 0; i < outputChannels; i++) {
+  const kernel = weights4D.slice(
+    [0, 0, 0, i],
+    [kernelHeight, kernelWidth, inputChannels, 1]
+  );
+  // kernel now contains the 5x5 weights for the i-th filter
+  let kernelArray = kernel.arraySync();
+  let kernelString = kernelArray.map((row) => row.join(' ')).join('\n');
+  console.log(`Printing the ${i}th kernel:`);
+  console.log(kernelString);
+}
+
+/*
 Getting something from the user
 */
 // Get the input and error message elements
@@ -153,19 +187,120 @@ function updateSceneText(newText, font) {
   scene.add(textMesh);
 }
 
-fontLoader.load('fonts/helvetiker_regular.typeface.json', (font) => {
-  // Handle the input event
-  inputElement.addEventListener('input', (event) => {
-    let userInput = event.target.value;
+// fontLoader.load('fonts/helvetiker_regular.typeface.json', (font) => {
+//   // Handle the input event
+//   inputElement.addEventListener('input', (event) => {
+//     let userInput = event.target.value;
 
-    // Check if the input is a number
-    if (isNaN(userInput)) {
-      errorMessageElement.textContent = 'Please enter a number.';
-    } else {
-      errorMessageElement.textContent = '';
-      updateSceneText(userInput, font);
+//     // Check if the input is a number
+//     if (isNaN(userInput)) {
+//       errorMessageElement.textContent = 'Please enter a number.';
+//     } else {
+//       errorMessageElement.textContent = '';
+//       updateSceneText(userInput, font);
+//     }
+//   });
+// });
+
+// Adding a way for the user to draw
+// Initialize the drawing mode
+
+const canvas = document.getElementById('drawingCanvas');
+const ctx = canvas.getContext('2d');
+const toggleSwitch = document.getElementById('toggleSwitch');
+const resetButton = document.getElementById('resetCanvas');
+const brushSizeControl = document.getElementById('brushSize');
+
+let brushSize = parseInt(brushSizeControl.value);
+let drawingMode = 'draw';
+let drawing = false;
+const scale = 10;
+const canvasArray = Array(28)
+  .fill()
+  .map(() => Array(28).fill(0)); // 0: black, 1: white
+window.canvasArray = canvasArray;
+
+function initializeCanvas() {
+  canvas.width = 280;
+  canvas.height = 280;
+  renderCanvasFromArray();
+}
+
+function updateCanvasArray(x, y, value) {
+  canvasArray[y][x] = value;
+}
+
+function renderCanvasFromArray() {
+  ctx.fillStyle = 'black';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  ctx.fillStyle = 'white';
+  for (let y = 0; y < canvasArray.length; y++) {
+    for (let x = 0; x < canvasArray[y].length; x++) {
+      if (canvasArray[y][x] === 1) {
+        ctx.fillRect(x * scale, y * scale, scale, scale);
+      }
     }
-  });
-});
+  }
+}
 
-// Now add a basic visualization of this network
+// Function to reset the canvas array and render it
+function resetCanvas() {
+  for (let y = 0; y < canvasArray.length; y++) {
+    for (let x = 0; x < canvasArray[y].length; x++) {
+      canvasArray[y][x] = 0;
+    }
+  }
+  renderCanvasFromArray();
+}
+
+// Function to update the brush size
+function updateBrushSize() {
+  brushSize = parseInt(this.value);
+}
+
+function toggleDrawingMode() {
+  drawingMode = this.checked ? 'erase' : 'draw';
+}
+
+function drawPixel(e) {
+  if (!drawing) return;
+
+  const rect = canvas.getBoundingClientRect();
+  const centerX = Math.floor((e.clientX - rect.left) / scale);
+  const centerY = Math.floor((e.clientY - rect.top) / scale);
+
+  const startX = centerX - Math.floor(brushSize / 2);
+  const startY = centerY - Math.floor(brushSize / 2);
+
+  const value = drawingMode === 'draw' ? 1 : 0;
+
+  for (let i = 0; i < brushSize; i++) {
+    for (let j = 0; j < brushSize; j++) {
+      const x = startX + i;
+      const y = startY + j;
+      if (x >= 0 && x < 28 && y >= 0 && y < 28) {
+        updateCanvasArray(x, y, value);
+      }
+    }
+  }
+
+  renderCanvasFromArray();
+}
+
+function setupEventListeners() {
+  canvas.addEventListener('mousedown', (e) => {
+    drawing = true;
+    drawPixel(e);
+  });
+  canvas.addEventListener('mouseup', () => (drawing = false));
+  canvas.addEventListener('mousemove', drawPixel);
+  canvas.addEventListener('mouseout', () => (drawing = false));
+  toggleSwitch.addEventListener('change', toggleDrawingMode);
+  resetButton.addEventListener('click', resetCanvas);
+  brushSizeControl.addEventListener('input', updateBrushSize);
+}
+
+// Initialization
+initializeCanvas();
+setupEventListeners();

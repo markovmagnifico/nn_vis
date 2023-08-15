@@ -8,12 +8,40 @@
     <style>
         body { margin: 0; }
     </style>
+    <link rel="stylesheet" href="styles.css">
 </html>
 
 <body>
-    <input type="text" id="user-input" required>
+    <!-- <input type="text" id="user-input" required>
     <span id="error-message" style="color: red;"></span>
+    <canvas id="mnist-canvas" width="28" height="28"></canvas>
+    <div id="label"></div> -->
     <script type="module" src="main.js"></script>
+    <!-- <div id="overlay">
+        <div class="red-square"></div>
+        <p class="hello-text">Hello World</p>
+    </div>       -->
+    <canvas id="drawingCanvas" width="28" height="28"></canvas>
+    <div id="controls">
+        <div id="controlBox">
+            <p id="drawLabel">Draw</p>
+            <label class="switch">
+            <input type="checkbox" id="toggleSwitch">
+            <span class="slider"></span>
+            </label>
+            <p id="eraseLabel">Erase</p>
+        </div>
+        <div id="controlBox">
+            <button id="resetCanvas">Reset Canvas</button>
+        </div>
+        <label for="brushSize">Brush Size:</label>
+        <div id="controlBox">
+            <p>1</p>
+            <input type="range" id="brushSize" min="1" max="5" value="1">
+            <p>5</p>
+        </div>
+    </div>
+    <!-- <script type="module" src="train_mnist.js"></script> -->
 </body>
 
 </html>
