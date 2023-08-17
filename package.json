@@ -1,5 +1,7 @@
 {
+  "type": "module",
   "dependencies": {
+    "@tensorflow/tfjs-node": "^4.10.0",
     "three": "^0.155.0"
   },
   "devDependencies": {
