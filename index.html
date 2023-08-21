@@ -12,15 +12,7 @@
 </html>
 
 <body>
-    <!-- <input type="text" id="user-input" required>
-    <span id="error-message" style="color: red;"></span>
-    <canvas id="mnist-canvas" width="28" height="28"></canvas>
-    <div id="label"></div> -->
     <script type="module" src="main.js"></script>
-    <!-- <div id="overlay">
-        <div class="red-square"></div>
-        <p class="hello-text">Hello World</p>
-    </div>       -->
     <canvas id="drawingCanvas" width="28" height="28"></canvas>
     <div id="controls">
         <div id="controlBox">
@@ -40,8 +32,11 @@
             <input type="range" id="brushSize" min="1" max="5" value="2">
             <p>5</p>
         </div>
+        <label for="smoothBrush">Smooth Brush:</label>
+        <div id="controlBox">
+            <input type="checkbox" id="smoothBrush" checked>
+        </div>        
     </div>
-    <!-- <script type="module" src="train_mnist.js"></script> -->
 </body>
 
 </html>

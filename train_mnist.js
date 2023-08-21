@@ -46,7 +46,7 @@ class MnistDataloader {
       const img = [];
       for (let row = 0; row < rows; row++) {
         const imgRow = Array.from(
-          imagesBuffer.slice(imageOffset, imageOffset + cols)
+          imagesBuffer.subarray(imageOffset, imageOffset + cols)
         );
         img.push(imgRow);
         imageOffset += cols;
@@ -103,7 +103,7 @@ model.compile({
 
 // Define training parameters
 const BATCH_SIZE = 32;
-const EPOCHS = 10;
+const EPOCHS = 20;
 
 // Train the model
 model.fit(xTrainTensor, yTrainTensor, {
@@ -118,38 +118,40 @@ model.fit(xTrainTensor, yTrainTensor, {
         )}, Test Loss: ${logs.val_loss.toFixed(4)}`
       );
 
-      const savePath = `model_checkpoints/mnist_epoch_${
+      const savePath = `model_checkpoints/epoch_${
         epoch + 1
-      }_train_loss_${logs.loss.toFixed(4)}_test_loss_${logs.val_loss.toFixed(
-        4
-      )}`;
+      }_loss_${logs.loss.toFixed(3)}_val_loss_${logs.val_loss.toFixed(3)}`;
       await model.save(`file://${savePath}`);
     },
   },
 });
 
-// Define the path where your model is saved
-const savedModelPath =
-  'file://model_checkpoints/mnist_epoch_10_train_loss_0.0193_test_loss_0.0351/model.json';
+/*
+ * Now test a loaded model
+ */
 
-// Load the model
-const loadedModel = await tf.loadLayersModel(savedModelPath);
+// // Define the path where your model is saved
+// const savedModelPath =
+//   'file://model_checkpoints/mnist_epoch_10_train_loss_0.0193_test_loss_0.0351/model.json';
 
-for (let i = 0; i < 10; i++) {
-  // Get the i-th instance from xTestTensor
-  const instance = xTestTensor.slice([i, 0, 0, 0], [1, 28, 28, 1]);
+// // Load the model
+// const loadedModel = await tf.loadLayersModel(savedModelPath);
 
-  // Predict the i-th instance
-  const prediction = loadedModel.predict(instance);
+// for (let i = 0; i < 10; i++) {
+//   // Get the i-th instance from xTestTensor
+//   const instance = xTestTensor.slice([i, 0, 0, 0], [1, 28, 28, 1]);
 
-  // Get the predicted class
-  const predictedClass = tf.argMax(prediction, 1);
+//   // Predict the i-th instance
+//   const prediction = loadedModel.predict(instance);
 
-  // Get the actual class label for the i-th instance
-  const actualClassTensor = yTestTensor.slice([i, 0], [1, 10]);
-  const actualClassLabel = tf.argMax(actualClassTensor, 1);
+//   // Get the predicted class
+//   const predictedClass = tf.argMax(prediction, 1);
 
-  console.log(`Instance ${i + 1}`);
-  console.log(`Predicted class: ${predictedClass.dataSync()[0]}`);
-  console.log(`Actual class: ${actualClassLabel.dataSync()[0]}`);
-}
+//   // Get the actual class label for the i-th instance
+//   const actualClassTensor = yTestTensor.slice([i, 0], [1, 10]);
+//   const actualClassLabel = tf.argMax(actualClassTensor, 1);
+
+//   console.log(`Instance ${i + 1}`);
+//   console.log(`Predicted class: ${predictedClass.dataSync()[0]}`);
+//   console.log(`Actual class: ${actualClassLabel.dataSync()[0]}`);
+// }
