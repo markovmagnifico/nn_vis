@@ -81,10 +81,7 @@ function drawSmoothPixel(e) {
       Math.pow(centerX - lastDrawPosition.x, 2) +
         Math.pow(centerY - lastDrawPosition.y, 2)
     );
-    if (distance < drawThreshold) {
-      console.log(`aborted`);
-      return;
-    }
+    if (distance < drawThreshold) return;
   }
   lastDrawPosition = { x: centerX, y: centerY };
 

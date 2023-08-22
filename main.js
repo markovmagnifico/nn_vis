@@ -1,4 +1,4 @@
-import * as THREE from 'three';
+// import * as THREE from 'three';
 import canvasArray from './imageInput.js';
 import { scene, renderer, camera } from './sceneSetup.js';
 import { FontLoader } from 'three/addons/loaders/FontLoader.js';

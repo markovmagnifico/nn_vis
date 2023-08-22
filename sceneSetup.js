@@ -1,8 +1,5 @@
-import * as THREE from 'three';
+// import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
-import { FontLoader } from 'three/addons/loaders/FontLoader.js';
-import { TextGeometry } from 'three/addons/geometries/TextGeometry.js';
-
 // Set up the scene
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x62a0de);
