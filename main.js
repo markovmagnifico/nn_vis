@@ -1,8 +1,5 @@
-// import * as THREE from 'three';
 import canvasArray from './imageInput.js';
 import { scene, renderer, camera } from './sceneSetup.js';
-import { FontLoader } from 'three/addons/loaders/FontLoader.js';
-import { TextGeometry } from 'three/addons/geometries/TextGeometry.js';
 
 /**
  * Setup for:
@@ -208,11 +205,11 @@ function draw1DLayer(layerIndex) {
   }
 }
 
-const loader = new FontLoader();
+const loader = new THREE.FontLoader();
 function drawOutputLabel(n, x, y, z) {
   loader.load('fonts/helvetiker_regular.typeface.json', function (font) {
     // Create the text geometry
-    const geometry = new TextGeometry(n.toString(), {
+    const geometry = new THREE.TextGeometry(n.toString(), {
       font: font,
       size: 0.1,
       height: 0.01,
