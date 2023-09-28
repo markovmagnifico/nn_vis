@@ -13,7 +13,7 @@ const cubeSpacing = 1.1; // the space between cube centers
 const geometry = new THREE.BoxGeometry(cubeSize, cubeSize, cubeSize);
 
 // Load the trained mnist model
-const savedModelPath = 'model/model.json';
+const savedModelPath = 'public/model/model.json';
 const model = await tf.loadLayersModel(savedModelPath);
 window.model = model;
 
