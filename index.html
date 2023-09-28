@@ -1,43 +1,44 @@
 <!DOCTYPE html>
 <html>
-
-<head>
-    <meta charset="utf-8">
+  <head>
+    <meta charset="utf-8" />
     <title>NN Visualizer</title>
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <style>
-        body { margin: 0; }
+      body {
+        margin: 0;
+      }
     </style>
-    <link rel="stylesheet" href="styles.css">
-</html>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="shortcut icon" type="image/x-icon" href="favicon.ico?" />
+  </head>
 
-<body>
+  <body>
     <script type="module" src="main.js"></script>
     <canvas id="drawingCanvas" width="28" height="28"></canvas>
     <div id="controls">
-        <div id="controlBox">
-            <p id="drawLabel">Draw</p>
-            <label class="switch">
-            <input type="checkbox" id="toggleSwitch">
-            <span class="slider"></span>
-            </label>
-            <p id="eraseLabel">Erase</p>
-        </div>
-        <div id="controlBox">
-            <button id="resetCanvas">Reset Canvas</button>
-        </div>
-        <label for="brushSize">Brush Size:</label>
-        <div id="controlBox">
-            <p>1</p>
-            <input type="range" id="brushSize" min="1" max="5" value="2">
-            <p>5</p>
-        </div>
-        <label for="smoothBrush">Smooth Brush:</label>
-        <div id="controlBox">
-            <input type="checkbox" id="smoothBrush" checked>
-        </div>        
+      <div id="controlBox">
+        <p id="drawLabel">Draw</p>
+        <label class="switch">
+          <input type="checkbox" id="toggleSwitch" />
+          <span class="slider"></span>
+        </label>
+        <p id="eraseLabel">Erase</p>
+      </div>
+      <div id="controlBox">
+        <button id="resetCanvas">Reset Canvas</button>
+      </div>
+      <label for="brushSize">Brush Size:</label>
+      <div id="controlBox">
+        <p>1</p>
+        <input type="range" id="brushSize" min="1" max="5" value="2" />
+        <p>5</p>
+      </div>
+      <label for="smoothBrush">Smooth Brush:</label>
+      <div id="controlBox">
+        <input type="checkbox" id="smoothBrush" checked />
+      </div>
     </div>
-</body>
-
+  </body>
 </html>
