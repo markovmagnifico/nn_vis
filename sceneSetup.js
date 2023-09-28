@@ -1,4 +1,3 @@
-import { OrbitControls } from './OrbitControls.js';
 // Set up the scene
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x62a0de);
@@ -26,6 +25,5 @@ const camera_rot = {
 camera.position.set(camera_pos.x, camera_pos.y, camera_pos.z);
 camera.rotation.set(camera_rot.x, camera_rot.y, camera_rot.z);
 window.camera = camera;
-const controls = new OrbitControls(camera, renderer.domElement);
 
 export { scene, renderer, camera };

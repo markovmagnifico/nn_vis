@@ -1,5 +1,13 @@
 import canvasArray from './imageInput.js';
 import { scene, renderer, camera } from './sceneSetup.js';
+import {
+  initializeMouseListeners,
+  initializeKeyListeners,
+  handleCameraMovement,
+} from './ArrowControls.js';
+
+initializeMouseListeners(camera, renderer.domElement);
+initializeKeyListeners(controls);
 
 /**
  * Setup for:
@@ -47,6 +55,14 @@ function createEmptyArray(shape) {
 
 function getColor(value) {
   return new THREE.Color(0.2 + value * 0.5, 0.6 + value * 0.4, 1 - value * 0.3);
+}
+
+function getColorString(value) {
+  const color = getColor(value);
+  const r = Math.floor(color.r * 255);
+  const g = Math.floor(color.g * 255);
+  const b = Math.floor(color.b * 255);
+  return `rgb(${r},${g},${b})`;
 }
 
 function createCube(x, y, z) {
@@ -129,6 +145,9 @@ function updateCubeColors() {
     .toFloat();
   const activations = activationModel.predict(inputTensor);
 
+  // Update the prediction display on the left
+  updatePredictionDisplay(activations);
+
   for (let layerIndex = 0; layerIndex < activations.length; layerIndex++) {
     const activation = activations[layerIndex];
     const shapeLength = activation.shape.length;
@@ -144,6 +163,19 @@ function updateCubeColors() {
       );
     }
   }
+}
+
+function updatePredictionDisplay(outputActivations) {
+  const finalLayerOutput = outputActivations[outputActivations.length - 1];
+  const finalOutputArray = finalLayerOutput.arraySync()[0];
+  finalOutputArray.forEach((value, index) => {
+    const color = getColorString(value);
+    console.log(color);
+    const box = document.getElementById(`box-${index}`);
+    const innerDiv = box.querySelector('div');
+    box.style.backgroundColor = color;
+    innerDiv.textContent = value.toFixed(2);
+  });
 }
 
 /**
@@ -250,6 +282,7 @@ draw1DLayer(6);
 function animate() {
   requestAnimationFrame(animate);
   renderer.render(scene, camera);
+  handleCameraMovement(camera);
 }
 animate();
 
